@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Onboarding TapCode">
+<meta property="og:description" content="Gestão completa para o seu bar. ERP, DRE, controle de barril em tempo real.">
+<meta property="og:image" content="https://tapcode-onboarding.github.io/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Onboarding TapCode">
+<meta name="twitter:image" content="https://tapcode-onboarding.github.io/og-image.png">
+<!-- Favicon inline SVG: TapCode "T" dourado -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230d0d0d'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='900' font-size='38' fill='%23f5a623'>T</text></svg>">
+<title>Onboarding TapCode</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #181818;
+    --surface2: #202020;
+    --border: #2c2c2c;
+    --gold: #f5a623;
+    --gold-light: #ffc55a;
+    --gold-dim: rgba(245,166,35,0.10);
+    --gold-border: rgba(245,166,35,0.28);
+    --white: #ffffff;
+    --muted: #7a7a7a;
+    --text: #e2e2e2;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Raleway',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); transition:width 0.5s cubic-bezier(.4,0,.2,1); z-index:100; }
+
+  /* ── 24/7 COMPANY SVG watermark ── */
+  .wm { position:fixed; pointer-events:none; z-index:10; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .wm-tr { top:14px; right:14px; opacity:0.11; }
+  .wm-bl { bottom:94px; left:14px; opacity:0.08; }
+  .wm-label { font-family:'Raleway',sans-serif; font-size:0.48rem; font-weight:700; letter-spacing:0.14em; color:#fff; text-transform:uppercase; line-height:1; }
+  .wm-sub { font-family:'Raleway',sans-serif; font-size:0.32rem; font-weight:400; letter-spacing:0.16em; color:#fff; text-transform:uppercase; line-height:1; }
+
+  .screen { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:72px 28px 104px; animation:fadeUp 0.45s cubic-bezier(.4,0,.2,1) forwards; }
+  .screen.active { display:flex; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
+
+  .logo-wrap { margin-bottom:40px; display:flex; align-items:center; justify-content:center; }
+  .logo-text { font-family:'Raleway',sans-serif; font-size:2.2rem; font-weight:800; letter-spacing:-0.03em; line-height:1; }
+  .logo-text .tap { color:#ffffff; }
+  .logo-text .code { color:var(--gold); }
+
+  .badge { display:inline-block; background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); font-size:0.63rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; padding:5px 16px; border-radius:100px; margin-bottom:20px; }
+
+  h1 { font-family:'Raleway',sans-serif; font-size:clamp(1.9rem,5.5vw,2.9rem); font-weight:800; line-height:1.08; text-align:center; max-width:620px; margin-bottom:16px; letter-spacing:-0.02em; }
+  h1 span { color:var(--gold); }
+  .subtitle { color:var(--muted); font-size:0.97rem; font-weight:400; text-align:center; max-width:500px; line-height:1.75; margin-bottom:42px; font-family:'Lora',serif; font-style:italic; }
+
+  .steps { display:flex; gap:7px; margin-bottom:34px; }
+  .sd { width:7px; height:7px; border-radius:50%; background:var(--border); transition:all 0.35s ease; }
+  .sd.active { background:var(--gold); width:24px; border-radius:4px; }
+  .sd.done { background:rgba(245,166,35,0.32); }
+
+  .fcard { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:30px; max-width:600px; width:100%; margin-bottom:14px; }
+  .fcard.hl { border-color:var(--gold-border); background:linear-gradient(135deg,#1c1810,#181818); }
+  .ftitle { font-family:'Raleway',sans-serif; font-weight:800; font-size:0.76rem; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+  .ficon { width:30px; height:30px; background:var(--gold-dim); border:1px solid var(--gold-border); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:0.95rem; flex-shrink:0; }
+  .fdesc { font-size:0.92rem; color:var(--text); line-height:1.72; }
+  .fsub { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .fsi { display:flex; gap:10px; font-size:0.86rem; color:var(--muted); align-items:flex-start; }
+  .fsi strong { color:var(--text); font-weight:600; }
+  .dot { width:5px; height:5px; background:var(--gold); border-radius:50%; margin-top:7px; flex-shrink:0; }
+
+  .lgrid { display:flex; flex-direction:column; gap:11px; max-width:600px; width:100%; }
+  .li { background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:18px 22px; display:flex; align-items:flex-start; gap:16px; }
+  .li.hl { border-color:var(--gold-border); background:linear-gradient(135deg,#1c1810,#181818); }
+  .ltag { font-family:'Raleway',sans-serif; font-size:0.64rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--bg); background:#888; padding:4px 11px; border-radius:7px; white-space:nowrap; margin-top:2px; }
+  .ltag.g { background:var(--gold); }
+  .ltag.p { background:linear-gradient(135deg,var(--gold),var(--gold-light)); }
+  .lt strong { display:block; font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:3px; }
+  .lt span { font-size:0.84rem; color:var(--muted); line-height:1.5; }
+
+  .anote { background:var(--surface2); border:1px dashed var(--gold-border); border-radius:13px; padding:18px 22px; font-size:0.84rem; color:var(--muted); max-width:600px; width:100%; margin-top:10px; line-height:1.65; }
+  .anote strong { color:var(--gold); }
+
+  .tgrid { display:flex; flex-direction:column; gap:13px; max-width:600px; width:100%; }
+  .ti { background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:20px 24px; display:flex; gap:18px; align-items:flex-start; }
+  .ticon { font-size:1.5rem; flex-shrink:0; margin-top:1px; }
+  .ti h3 { font-family:'Raleway',sans-serif; font-size:0.93rem; font-weight:700; color:var(--white); margin-bottom:5px; }
+  .ti p { font-size:0.84rem; color:var(--muted); line-height:1.6; }
+
+  /* ── PLAN CARDS — features first, CTA last ── */
+  .pgrid { display:flex; flex-direction:column; gap:16px; max-width:600px; width:100%; }
+  .pc { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px 26px; position:relative; }
+  .pc.ft { border-color:var(--gold); background:linear-gradient(140deg,#1e1a12,#181818); }
+  .pbadge { position:absolute; top:-12px; right:22px; background:var(--gold); color:var(--bg); font-family:'Raleway',sans-serif; font-size:0.61rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:4px 14px; border-radius:100px; }
+  .pname { font-family:'Raleway',sans-serif; font-size:1.12rem; font-weight:800; color:var(--white); margin-bottom:4px; letter-spacing:0.04em; }
+  .pdesc { font-size:0.82rem; color:var(--muted); margin-bottom:20px; }
+
+  /* Features first */
+  .pfeats { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .pf { display:flex; gap:10px; font-size:0.87rem; align-items:flex-start; }
+  .ck { color:var(--gold); font-size:0.78rem; margin-top:2px; flex-shrink:0; font-weight:700; }
+  .xx { color:#3a3a3a; font-size:0.78rem; margin-top:2px; flex-shrink:0; }
+  .pf span { color:var(--text); font-weight:500; }
+  .pf .dm { color:#3d3d3d; font-weight:400; }
+
+  /* CTA block — at the bottom, high contrast */
+  .pcta { border-top:1px solid var(--border); padding-top:20px; }
+  .pcta-hint {
+    font-size:0.72rem; color:var(--muted); text-align:center;
+    margin-bottom:10px; letter-spacing:0.04em; font-style:italic;
+    font-family:'Lora',serif;
+  }
+
+  /* Neuromarketing CTA button */
+  .bwa {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; padding:16px 20px;
+    background:linear-gradient(135deg, var(--gold), var(--gold-light));
+    border:none; border-radius:13px;
+    color:#0d0d0d;
+    font-family:'Raleway',sans-serif; font-size:0.95rem; font-weight:800;
+    letter-spacing:0.02em; text-decoration:none;
+    transition:all 0.2s; position:relative; overflow:hidden;
+    box-shadow: 0 4px 24px rgba(245,166,35,0.25);
+  }
+  .bwa::after {
+    content:'';
+    position:absolute; top:0; left:-100%; width:60%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+    animation: shimmer 2.8s infinite;
+  }
+  @keyframes shimmer { 0%{left:-100%} 100%{left:200%} }
+  .bwa:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(245,166,35,0.4); }
+  .bwa:active { transform:translateY(0); }
+  .bwa-arrow { font-size:1rem; transition:transform 0.2s; }
+  .bwa:hover .bwa-arrow { transform:translateX(3px); }
+
+  /* Urgency micro-text below CTA */
+  .pcta-micro {
+    text-align:center; margin-top:9px;
+    font-size:0.7rem; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; gap:5px;
+  }
+  .pcta-micro .pulse {
+    width:6px; height:6px; background:#4caf50; border-radius:50%;
+    display:inline-block; flex-shrink:0;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0.5)}
+    50%{box-shadow:0 0 0 5px rgba(76,175,80,0)}
+  }
+
+  .cnote { background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:16px 22px; font-size:0.83rem; color:var(--muted); max-width:600px; width:100%; margin-top:10px; text-align:center; line-height:1.65; }
+  .cnote strong { color:var(--text); }
+
+  .fbox { background:linear-gradient(140deg,#1e1a12,#181510); border:1px solid var(--gold); border-radius:22px; padding:40px 30px; max-width:600px; width:100%; text-align:center; }
+  .fbox h2 { font-family:'Raleway',sans-serif; font-size:clamp(1.45rem,4vw,1.9rem); font-weight:800; margin-bottom:12px; line-height:1.2; letter-spacing:-0.01em; }
+  .fbox p { font-family:'Lora',serif; font-style:italic; font-size:0.92rem; color:var(--muted); line-height:1.78; margin-bottom:26px; }
+
+  .bagen {
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));
+    color:var(--bg); padding:18px 40px; border-radius:13px;
+    font-family:'Raleway',sans-serif; font-size:1rem; font-weight:800;
+    letter-spacing:0.04em; text-decoration:none;
+    transition:all 0.2s; position:relative; overflow:hidden;
+    box-shadow:0 4px 28px rgba(245,166,35,0.3);
+  }
+  .bagen::after {
+    content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+    animation:shimmer 2.8s infinite 0.5s;
+  }
+  .bagen:hover { transform:translateY(-2px); box-shadow:0 8px 36px rgba(245,166,35,0.45); }
+  .fagen-micro { margin-top:12px; font-size:0.72rem; color:var(--muted); display:flex; align-items:center; justify-content:center; gap:6px; }
+  .fagen-micro .pulse { width:6px; height:6px; background:#4caf50; border-radius:50%; display:inline-block; animation:pulse 1.6s infinite; }
+
+  .fdiv { margin:24px 0; border:none; border-top:1px solid var(--border); }
+  .ffoot { font-size:0.75rem; color:#444; letter-spacing:0.06em; }
+
+  .nav { position:fixed; bottom:0; left:0; right:0; padding:14px 24px 30px; background:linear-gradient(to top,rgba(13,13,13,0.97) 65%,transparent); display:flex; gap:12px; justify-content:center; z-index:50; }
+  .bback { background:transparent; border:1px solid var(--border); color:var(--muted); padding:15px 26px; border-radius:13px; font-family:'Raleway',sans-serif; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+  .bback:hover { border-color:var(--muted); color:var(--text); }
+  .bnext { background:var(--gold); color:var(--bg); border:none; padding:15px 36px; border-radius:13px; font-family:'Raleway',sans-serif; font-size:0.92rem; font-weight:800; cursor:pointer; transition:all 0.2s; flex:1; max-width:340px; letter-spacing:0.03em; }
+  .bnext:hover { background:var(--gold-light); transform:translateY(-1px); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="pb"></div>
+
+<!-- 24/7 Company — SVG fiel ao logo original: dois losangos externos sobrepostos + losango interno menor -->
+<div class="wm wm-tr">
+  <div class="wm-label">24/7 Company</div>
+</div>
+
+<div class="wm wm-bl">
+  <div class="wm-label">24/7 Company</div>
+</div>
+
+<!-- S1 INTRO -->
+<div class="screen active" id="s1">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st1"></div>
+  <div class="badge">Bem-vindo</div>
+  <h1>Gestão completa para o seu <span>bar</span></h1>
+  <p class="subtitle">Em poucos passos você vai entender tudo que o TapCode oferece — e escolher o plano certo para o seu negócio.</p>
+</div>
+
+<!-- S2 ERP -->
+<div class="screen" id="s2">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st2"></div>
+  <div class="badge">Módulo 1</div>
+  <h1><span style="display:block;font-size:1rem;font-weight:700;color:var(--muted);letter-spacing:0.18em;margin-bottom:6px">ERP</span>Controle <span>financeiro</span> real</h1>
+  <p class="subtitle">Saiba exatamente o que entra e o que sai do seu caixa, todo dia.</p>
+  <div class="fcard hl">
+    <div class="ftitle"><div class="ficon">📊</div> Contas a Pagar e a Receber</div>
+    <div class="fdesc">Visão completa das suas obrigações e receitas em tempo real — sem planilha perdida, sem surpresa no fim do mês.</div>
+    <div class="fsub">
+      <div class="fsi"><div class="dot"></div><div><strong>Planilha</strong><br><span style="font-size:0.8rem;color:var(--muted)">Formato básico, ideal para quem está começando</span></div></div>
+      <div class="fsi"><div class="dot"></div><div><strong>Visual</strong><br><span style="font-size:0.8rem;color:var(--muted)">Interface completa e prática, tudo num dashboard</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S3 DRE -->
+<div class="screen" id="s3">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st3"></div>
+  <div class="badge">Módulo 2</div>
+  <h1><span style="display:block;font-size:1rem;font-weight:700;color:var(--muted);letter-spacing:0.18em;margin-bottom:6px">DRE</span>Saúde <span>financeira</span> com I.A.</h1>
+  <p class="subtitle">Veja a situação real do seu bar com inteligência artificial analisando seus dados.</p>
+  <div class="fcard hl">
+    <div class="ftitle"><div class="ficon">🧠</div> Dashboard ERP + I.A.</div>
+    <div class="fdesc">O DRE do TapCode une o seu ERP a um painel de saúde financeira com inteligência artificial — identificando onde você perde dinheiro e onde pode lucrar mais.</div>
+    <div class="fsub">
+      <div class="fsi"><div class="dot"></div><div>Demonstrativo de resultado automatizado</div></div>
+      <div class="fsi"><div class="dot"></div><div>KPIs e indicadores visuais do seu negócio</div></div>
+      <div class="fsi"><div class="dot"></div><div>Análise inteligente de perda por barril</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 ATIVOS -->
+<div class="screen" id="s4">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st4"></div>
+  <div class="badge">Módulo 3</div>
+  <h1><span style="display:block;font-size:1rem;font-weight:700;color:var(--muted);letter-spacing:0.18em;margin-bottom:6px">ATIVOS</span>Seus <span>produtos</span> organizados</h1>
+  <p class="subtitle">Cadastre e gerencie tudo que você vende, do chopp ao petisco.</p>
+  <div class="fcard hl">
+    <div class="ftitle"><div class="ficon">🍺</div> Produtos na Base de Dados</div>
+    <div class="fdesc">Cada ativo é um produto cadastrado — barris, torneiras, itens do cardápio. Tudo rastreado, controlado e disponível em tempo real.</div>
+  </div>
+  <div class="anote">💡 <strong>Pay per use:</strong> Caso ultrapasse o limite de ativos do seu plano, você não fica travado. Há planos de créditos disponíveis — sem precisar mudar de plano se não quiser.</div>
+</div>
+
+<!-- S5 LAYOUT -->
+<div class="screen" id="s5">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st5"></div>
+  <div class="badge">Módulo 4</div>
+  <h1><span style="display:block;font-size:1rem;font-weight:700;color:var(--muted);letter-spacing:0.18em;margin-bottom:6px">LAYOUT</span>Do <span>seu</span> jeito</h1>
+  <p class="subtitle">O TapCode se adapta à identidade visual do seu bar.</p>
+  <div class="lgrid">
+    <div class="li"><div class="ltag">Padrão</div><div class="lt"><strong>Layout Padrão</strong><span>Interface igual à apresentada, com seu logo inserido.</span></div></div>
+    <div class="li"><div class="ltag g">Personalizado</div><div class="lt"><strong>Layout Personalizado</strong><span>Cores da sua marca, logo e tipografia aplicados em todo o sistema.</span></div></div>
+    <div class="li hl"><div class="ltag p">Plus</div><div class="lt"><strong>Layout Personalizado Plus</strong><span>Do seu jeito! Abas, estrutura e tudo exatamente como você pensou para o seu negócio.</span></div></div>
+  </div>
+</div>
+
+<!-- S6 CONFIANÇA -->
+<div class="screen" id="s6">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st6"></div>
+  <div class="badge">Por que TapCode</div>
+  <h1>Feito para quem <span>opera</span> de verdade</h1>
+  <p class="subtitle">Não é uma planilha genérica. É uma ferramenta construída para o ritmo de um bar artesanal.</p>
+  <div class="tgrid">
+    <div class="ti" style="border-color:rgba(66,133,244,0.3);background:linear-gradient(135deg,#0d1520,#181818)"><div class="ticon">🔵</div><div><h3 style="color:#4a9eff">Infraestrutura Google Cloud</h3><p>Seus dados protegidos pela mesma tecnologia usada por bilhões de pessoas no mundo. Criptografado, disponível 24/7 e com backup automático — nenhum dado seu se perde.</p><div style="margin-top:10px;display:flex;align-items:center;gap:6px;font-size:0.72rem;color:#4a9eff;font-weight:700;letter-spacing:0.06em"><span style="background:rgba(66,133,244,0.15);border:1px solid rgba(66,133,244,0.3);padding:2px 10px;border-radius:20px">🔒 SSL Criptografado</span><span style="background:rgba(66,133,244,0.15);border:1px solid rgba(66,133,244,0.3);padding:2px 10px;border-radius:20px">☁ Google Cloud</span></div></div></div>
+    <div class="ti"><div class="ticon">⚡</div><div><h3>Setup incluso</h3><p>Nossa equipe implementa o TapCode no seu bar. Você não precisa se preocupar com tecnologia.</p></div></div>
+    <div class="ti"><div class="ticon">📈</div><div><h3>Visão financeira real</h3><p>Pare de achar que está lucrando. Veja exatamente quanto entra, sai e onde você perde no barril.</p></div></div>
+    <div class="ti"><div class="ticon">🤝</div><div><h3>Contrato anual, pagamento mensal</h3><p>Previsibilidade para o seu bolso. Mínimo de 6 meses — sem letras miúdas.</p></div></div>
+  </div>
+</div>
+
+<!-- S7 PLANOS — features first, CTA last -->
+<div class="screen" id="s7">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st7"></div>
+  <div class="badge">Planos</div>
+  <h1>Escolha o plano <span>certo</span> para você</h1>
+  <p class="subtitle">Veja o que cada plano inclui e fale com nosso time para dar o próximo passo.</p>
+  <div class="pgrid">
+
+    <!-- START -->
+    <div class="pc">
+      <div class="pname">START</div>
+      <div class="pdesc">Ideal para quem está começando</div>
+      <div class="pfeats">
+        <div class="pf"><span class="ck">✓</span><span>ERP Planilha</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Até 200 ativos</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Layout Padrão (com seu logo)</span></div>
+        <div class="pf"><span class="xx">✗</span><span class="dm">DRE com I.A.</span></div>
+        <div class="pf"><span class="xx">✗</span><span class="dm">Layout personalizado</span></div>
+      </div>
+      <div class="pcta">
+        <div class="pcta-hint">Sem compromisso — só uma conversa</div>
+        <a href="https://wa.me/5511947506085" target="_blank" class="bwa">
+          💬 Quero saber o valor <span class="bwa-arrow">→</span>
+        </a>
+        <div class="pcta-micro"><span class="pulse"></span> Time online agora · resposta em minutos</div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="pc ft">
+      <div class="pbadge">Mais Vendido</div>
+      <div class="pname">PRO</div>
+      <div class="pdesc">Para quem quer controle completo</div>
+      <div class="pfeats">
+        <div class="pf"><span class="ck">✓</span><span>ERP Visual — completo e prático</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Até 500 ativos</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Layout Personalizado</span></div>
+        <div class="pf"><span class="xx">✗</span><span class="dm">DRE com I.A.</span></div>
+      </div>
+      <div class="pcta">
+        <div class="pcta-hint">O favorito de quem já usa o TapCode</div>
+        <a href="https://wa.me/5511947506085" target="_blank" class="bwa">
+          💬 Quero saber o valor <span class="bwa-arrow">→</span>
+        </a>
+        <div class="pcta-micro"><span class="pulse"></span> Time online agora · resposta em minutos</div>
+      </div>
+    </div>
+
+    <!-- ENTERPRISE -->
+    <div class="pc">
+      <div class="pname">ENTERPRISE</div>
+      <div class="pdesc">Visão estratégica total do negócio</div>
+      <div class="pfeats">
+        <div class="pf"><span class="ck">✓</span><span>ERP + DRE com I.A.</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Até 1.000 ativos</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Layout Personalizado Plus</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Dashboard saúde financeira</span></div>
+        <div class="pf"><span class="ck">✓</span><span>Tudo do seu jeito</span></div>
+      </div>
+      <div class="pcta">
+        <div class="pcta-hint">Máximo controle para quem leva o bar a sério</div>
+        <a href="https://wa.me/5511947506085" target="_blank" class="bwa">
+          💬 Quero saber o valor <span class="bwa-arrow">→</span>
+        </a>
+        <div class="pcta-micro"><span class="pulse"></span> Time online agora · resposta em minutos</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="cnote">📅 <strong>Contrato anual</strong> com pagamento mensal · mínimo de 6 meses · Setup pago uma única vez</div>
+</div>
+
+<!-- S8 FINAL -->
+<div class="screen" id="s8">
+  <div class="logo-wrap"><div class="logo-text"><span class="tap">Tap</span><span class="code">Code</span></div></div>
+  <div class="steps" id="st8"></div>
+  <div class="fbox">
+    <div style="font-size:2.8rem;margin-bottom:22px">🍺</div>
+    <div class="badge" style="margin-bottom:18px">Próximo passo</div>
+    <h2>A decisão mais inteligente para o seu bar começa com <span style="color:var(--gold)">uma conversa</span></h2>
+    <p style="margin-top:16px">Quem já usa o TapCode não volta para planilha. Agende uma call ou visita sem compromisso, veja o sistema ao vivo e sinta a diferença na prática.</p>
+    <a href="https://wa.me/5511947506085" target="_blank" class="bagen">📅 Quero agendar minha visita</a>
+    <div class="fagen-micro"><span class="pulse"></span> Atendimento gratuito · sem compromisso · resposta em minutos</div>
+    <hr class="fdiv">
+    <div style="display:flex;flex-direction:column;gap:10px;text-align:left">
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:var(--muted)">
+        <span style="color:#4caf50;flex-shrink:0;margin-top:1px">✓</span>
+        <span><strong style="color:var(--text)">Sem pegadinhas.</strong> Contrato transparente, pagamento mensal, sem multas abusivas.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:var(--muted)">
+        <span style="color:#4a9eff;flex-shrink:0;margin-top:1px">🔒</span>
+        <span><strong style="color:var(--text)">Dados protegidos</strong> na infraestrutura Google Cloud, com criptografia e backup automático.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:var(--muted)">
+        <span style="color:var(--gold);flex-shrink:0;margin-top:1px">★</span>
+        <span><strong style="color:var(--text)">Implementamos tudo pra você.</strong> Você não precisa saber de tecnologia para usar o TapCode.</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:26px;opacity:0.18;">
+    <span style="font-family:'Raleway',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.14em;color:#fff;text-transform:uppercase;">24/7 Company</span>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="bback" id="btnBack" style="display:none" onclick="goBack()">← Voltar</button>
+  <button class="bnext" id="btnNext" onclick="goNext()">Começar →</button>
+</div>
+
+<script>
+  const T=8; let c=1;
+  function steps(n){
+    const el=document.getElementById('st'+n);
+    if(!el)return; el.innerHTML='';
+    for(let i=1;i<=T;i++){
+      const d=document.createElement('div');
+      d.className='sd'+(i===n?' active':i<n?' done':'');
+      el.appendChild(d);
+    }
+  }
+  function ui(){
+    document.getElementById('pb').style.width=((c-1)/(T-1)*100)+'%';
+    steps(c);
+    document.getElementById('btnBack').style.display=c>1?'block':'none';
+    const b=document.getElementById('btnNext');
+    if(c===T){b.textContent='✓ Tudo certo!';b.style.opacity='0.5';b.style.cursor='default';}
+    else if(c===1)b.textContent='Começar →';
+    else if(c===T-1)b.textContent='Ver resumo →';
+    else b.textContent='Próximo →';
+  }
+  function go(dir){
+    const nc=c+dir;
+    if(nc<1||nc>T)return;
+    document.getElementById('s'+c).classList.remove('active');
+    c=nc;
+    const s=document.getElementById('s'+c);
+    s.style.animation='none';s.offsetHeight;s.style.animation='';
+    s.classList.add('active');
+    ui();window.scrollTo(0,0);
+  }
+  function goNext(){if(c<T)go(1);}
+  function goBack(){go(-1);}
+  ui();
+</script>
+</body>
+</html>
